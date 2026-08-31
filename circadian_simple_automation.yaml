@@ -1,0 +1,77 @@
+- alias: Circadian Lighting – Smart Lamp
+  description: Κιρκάδιος φωτισμός με βάση την ώρα
+  mode: single
+
+  trigger:
+    - platform: time_pattern
+      minutes: "/5"
+
+  condition:
+    - condition: state
+      entity_id: light.smart_lamp
+      state: "on"
+
+  action:
+    - choose:
+        - conditions:
+            - condition: time
+              after: "07:00:00"
+              before: "11:00:00"
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: light.smart_lamp
+              data:
+                brightness_pct: 90
+                kelvin: 6000
+
+        - conditions:
+            - condition: time
+              after: "11:00:00"
+              before: "17:00:00"
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: light.smart_lamp
+              data:
+                brightness_pct: 100
+                kelvin: 6500
+
+        - conditions:
+            - condition: time
+              after: "17:00:00"
+              before: "21:00:00"
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: light.smart_lamp
+              data:
+                brightness_pct: 60
+                kelvin: 4000
+
+        - conditions:
+            - condition: time
+              after: "21:00:00"
+              before: "23:30:00"
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: light.smart_lamp
+              data:
+                brightness_pct: 30
+                kelvin: 2700
+
+        - conditions:
+            - condition: or
+              conditions:
+                - condition: time
+                  after: "23:30:00"
+                - condition: time
+                  before: "07:00:00"
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: light.smart_lamp
+              data:
+                brightness_pct: 10
+                kelvin: 2200
